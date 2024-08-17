@@ -4,7 +4,7 @@ import string
 
 app = Flask(__name__)
 
-# ডোমেইনের তালিকা
+# ডোমেইন লিস্ট
 domains = [
     "1secmail.com",
     "1secmail.org",
@@ -15,23 +15,19 @@ domains = [
     "yoggm.com"
 ]
 
-# র্যান্ডম ইউজারনেম তৈরি ফাংশন
-def generate_username(length=8):
-    letters = string.ascii_lowercase + string.digits
-    return ''.join(random.choice(letters) for i in range(length))
+# র‍্যান্ডম স্ট্রিং তৈরি করার ফাংশন
+def generate_random_string(length=10):
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))
 
-# মেইল তৈরি এবং JSON রেসপন্স প্রদান ফাংশন
+# মেইল তৈরি করার রুট
 @app.route('/v1', methods=['GET'])
 def create_temp_mail():
     if request.args.get('tempmail') == 'create':
-        username = generate_username()
-        domain = random.choice(domains)
-        temp_email = f"{username}@{domain}"
-        
-        # JSON আকারে রেসপন্স প্রদান
-        return jsonify({"email": temp_email}), 200
+        emails = [f"{generate_random_string()}@{domain}" for domain in domains]
+        return jsonify(emails)
     else:
-        return jsonify({"error": "Invalid request"}), 400
+        return jsonify({"error": "Invalid query parameter"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
