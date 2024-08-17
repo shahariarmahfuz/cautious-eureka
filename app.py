@@ -1,10 +1,10 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 import random
 import string
 
 app = Flask(__name__)
 
-# ডোমেইন লিস্ট
+# ডোমেইনগুলোর তালিকা
 domains = [
     "1secmail.com",
     "1secmail.org",
@@ -15,19 +15,16 @@ domains = [
     "yoggm.com"
 ]
 
-# র‍্যান্ডম স্ট্রিং তৈরি করার ফাংশন
-def generate_random_string(length=10):
-    characters = string.ascii_letters + string.digits
-    return ''.join(random.choice(characters) for _ in range(length))
+# র্যান্ডম মেইল নাম তৈরি করার ফাংশন
+def generate_random_mail_name():
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
 
-# মেইল তৈরি করার রুট
+# /v1?tempmail রুট
 @app.route('/v1', methods=['GET'])
-def create_temp_mail():
-    if request.args.get('tempmail') == 'create':
-        emails = [f"{generate_random_string()}@{domain}" for domain in domains]
-        return jsonify(emails)
-    else:
-        return jsonify({"error": "Invalid query parameter"}), 400
+def generate_temp_mails():
+    mail_addresses = [f"{generate_random_mail_name()}@{domain}" for domain in domains]
+    return jsonify(mail_addresses)
 
+# অ্যাপ রান করানোর জন্য
 if __name__ == '__main__':
     app.run(debug=True)
